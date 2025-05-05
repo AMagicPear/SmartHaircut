@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.graphics.PointF;
 import android.media.Image;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -48,7 +49,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
 
-    private ActivityResultLauncher<String> mRequestLauncher =
+    private final ActivityResultLauncher<String> mRequestLauncher =
             registerForActivityResult(
                     new ActivityResultContracts.RequestPermission(),
                     new ActivityResultCallback<Boolean>() {
@@ -57,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
                             if (isGranted)
                                 performAction();
                             else
-                                Toast.makeText(getApplicationContext(),"This app need CAMERA",
+                                Toast.makeText(getApplicationContext(),"相机权限不能被申请！",
                                         Toast.LENGTH_LONG).show();
                         }
                     }
@@ -79,20 +80,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
-        if (ContextCompat.checkSelfPermission(this,
-                android.Manifest.permission.CAMERA)==
-                PackageManager.PERMISSION_GRANTED){
-            performAction();
-        }else if(shouldShowRequestPermissionRationale(
-                android.Manifest.permission.CAMERA
-        )) {
-            Toast.makeText(this,"This app need CAMERA",
-                    Toast.LENGTH_LONG).show();
-        }else {
+        super.onStart();
+        if (getApplicationContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
             mRequestLauncher.launch(Manifest.permission.CAMERA);
+        } else {
+            Log.d("Perry", "onStart: No Camera Detected.");
         }
-
     }
 
     private void performAction(){
