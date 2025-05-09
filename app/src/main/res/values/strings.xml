@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">SmartPoster</string>
+    <string name="TakePhotoButton">点击后拍照</string>
 </resources>
