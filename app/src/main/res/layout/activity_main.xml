@@ -21,4 +21,14 @@
         android:contentDescription="@string/TakePhotoButton"
         android:src="@android:drawable/ic_menu_camera"
         app:tint="@android:color/black"/>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/view_pictures"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:layout_margin="16dp"
+        android:contentDescription="@string/ViewPicturesButton"
+        android:src="@android:drawable/ic_menu_gallery"
+        app:tint="@android:color/black" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

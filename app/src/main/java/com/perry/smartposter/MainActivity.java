@@ -1,6 +1,7 @@
 package com.perry.smartposter;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.Image;
 import android.os.Bundle;
@@ -80,6 +81,12 @@ public class MainActivity extends AppCompatActivity {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
+        });
+
+        FloatingActionButton viewPicturesButton = findViewById(R.id.view_pictures);
+        viewPicturesButton.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, Pictures.class);
+            startActivity(intent);
         });
     }
 
