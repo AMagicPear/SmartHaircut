@@ -1,9 +1,14 @@
 package com.perry.smartposter;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,18 +35,33 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return null;
+        // 加载RecyclerView子项的布局
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_view_item, parent, false);
+        return new MyViewHolder(view);
     }
 
     /// 绑定数据到ViewHolder
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-
+        Toast.makeText(holder.mTextView.getContext(), mDataList.get(position).mText, Toast.LENGTH_SHORT).show();
+        holder.mImageView.setImageResource(mDataList.get(position).mImageResource);
+        holder.mTextView.setText(mDataList.get(position).mText);
+        holder.mTextView.setOnLongClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+            builder.setTitle("Tips")
+                    .setMessage("Do u want to delete?")
+                    .setPositiveButton("Yes", (dialog, which) -> {
+                        mDataList.remove(holder.getAdapterPosition());
+                        notifyDataSetChanged();
+                    }).setNegativeButton("Cancel", null);
+            builder.create().show();
+            return true;
+        });
     }
 
     ///@return 返回数据项的数量
     @Override
     public int getItemCount() {
-        return 0;
+        return mDataList.size();
     }
 }

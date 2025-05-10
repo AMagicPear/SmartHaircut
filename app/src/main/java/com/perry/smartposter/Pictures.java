@@ -1,6 +1,7 @@
 package com.perry.smartposter;
 
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -35,8 +36,9 @@ public class Pictures extends AppCompatActivity {
         recyclerView.setAdapter(customAdapter);
     }
 
-    private ArrayList<DataElement> getMyData(){
+    private ArrayList<DataElement> getMyData() {
         ArrayList<DataElement> dataList = new ArrayList<>();
+        dataList.add(new DataElement(1, R.drawable.fish, "Fish"));
         return dataList;
     }
 }
