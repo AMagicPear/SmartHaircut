@@ -1,4 +1,8 @@
 <resources>
-    <string name="app_name">SmartPoster</string>
+    <string name="app_name">SmartHaircut</string>
     <string name="TakePhotoButton">点击后拍照</string>
+    <string name="camera_permission_denied">相机权限不能被申请！</string>
+    <string name="photo_taken">已成功拍照！</string>
+
+    <!-- <string name="app_name">您的应用名称</string> -->
 </resources>
