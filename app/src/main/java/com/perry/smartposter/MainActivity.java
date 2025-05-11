@@ -5,8 +5,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.Image;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
-import android.view.View;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -37,7 +37,16 @@ import com.google.mlkit.vision.face.FaceDetectorOptions;
 
 import org.jspecify.annotations.NonNull;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class MainActivity extends AppCompatActivity {
+    private static final SimpleDateFormat FILENAME_FORMAT = new SimpleDateFormat("yyMMdd_HHmmss", Locale.CHINA);
     private FaceDetector faceDetector;
     private LifecycleCameraController controller;
 
@@ -114,36 +123,59 @@ public class MainActivity extends AppCompatActivity {
     private void processImage(ImageProxy imageProxy) {
         Image mediaImage = imageProxy.getImage();
         if (mediaImage != null) {
-            InputImage image = InputImage.fromMediaImage(mediaImage, imageProxy.getImageInfo().getRotationDegrees());
-            // 将图像传递给 ML Kit Vision API
-            faceDetector.process(image).addOnSuccessListener(faces -> {
-                // 任务成功完成
-                for (var face : faces) {
-                    Log.d("Perry", String.format("Face: %s", face.getTrackingId()));
-                }
-            }).addOnFailureListener(e -> {
-                // 任务失败
-                Log.e("MainActivity", "Face detection failed", e);
+            File picturesDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+            if (picturesDir == null) {
+                Log.e("MainActivity", "Could not get external pictures directory");
                 imageProxy.close();
-            });
+                return;
+            }
+            File file = new File(picturesDir, makeFileName());
+            try (imageProxy; FileOutputStream fos = new FileOutputStream(file)) {
+                Log.d("MainActivity", "Saving image to: " + file.getAbsolutePath());
+                ByteBuffer buffer = mediaImage.getPlanes()[0].getBuffer();
+                byte[] bytes = new byte[buffer.remaining()];
+                buffer.get(bytes);
+                fos.write(bytes);
+                fos.flush();
+                Log.d("MainActivity", "Image saved successfully");
+            } catch (IOException e) {
+                Log.e("MainActivity", "Error saving image", e);
+            }
+
+//            InputImage image = InputImage.fromMediaImage(mediaImage, imageProxy.getImageInfo().getRotationDegrees());
+//            // 将图像传递给 ML Kit Vision API
+//            faceDetector.process(image).addOnSuccessListener(faces -> {
+//                // 任务成功完成
+//                for (var face : faces) {
+//                    Log.d("Perry", String.format("Face: %s", face.getTrackingId()));
+//                }
+//            }).addOnFailureListener(e -> {
+//                // 任务失败
+//                Log.e("MainActivity", "Face detection failed", e);
+//                imageProxy.close();
+//            });
         } else imageProxy.close();
     }
 
     private void bindTakePictureButton() {
         FloatingActionButton btn = findViewById(R.id.take_photo);
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                controller.takePicture(ContextCompat.getMainExecutor(v.getContext()), new ImageCapture.OnImageCapturedCallback() {
-                            @Override
-                            public void onCaptureSuccess(@NonNull ImageProxy imageProxy) {
-                                super.onCaptureSuccess(imageProxy);
-                                Toast.makeText(getApplicationContext(), R.string.photo_taken, Toast.LENGTH_SHORT).show();
-                                processImage(imageProxy);
+        btn.setOnClickListener(v ->
+                {
+                    controller.takePicture(ContextCompat.getMainExecutor(v.getContext()), new ImageCapture.OnImageCapturedCallback() {
+                                @Override
+                                public void onCaptureSuccess(@NonNull ImageProxy imageProxy) {
+                                    super.onCaptureSuccess(imageProxy);
+                                    Toast.makeText(getApplicationContext(), R.string.photo_taken, Toast.LENGTH_SHORT).show();
+                                    processImage(imageProxy);
+                                }
                             }
-                        }
-                );
-            }
-        });
+                    );
+
+                }
+        );
+    }
+
+    private String makeFileName() {
+        return "IMG_" + FILENAME_FORMAT.format(new Date()) + ".jpg";
     }
 }

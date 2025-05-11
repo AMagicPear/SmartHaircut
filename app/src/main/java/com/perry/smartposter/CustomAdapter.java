@@ -1,8 +1,7 @@
 package com.perry.smartposter;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.util.Log;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,7 +43,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         Toast.makeText(holder.mTextView.getContext(), mDataList.get(position).mText, Toast.LENGTH_SHORT).show();
-        holder.mImageView.setImageResource(mDataList.get(position).mImageResource);
+        holder.mImageView.setImageURI(Uri.parse(mDataList.get(position).mImagePath));
         holder.mTextView.setText(mDataList.get(position).mText);
         holder.mTextView.setOnLongClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());

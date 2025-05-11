@@ -2,11 +2,11 @@ package com.perry.smartposter;
 
 public class DataElement {
     public long id;
-    public int mImageResource;
+    public String mImagePath;
     public String mText;
-    DataElement(long id,int imageResource, String text){
+    DataElement(long id, String imagePath, String text) {
         this.id = id;
-        this.mImageResource = imageResource;
-        mText = text;
+        this.mImagePath = imagePath;
+        this.mText = text;
     }
 }

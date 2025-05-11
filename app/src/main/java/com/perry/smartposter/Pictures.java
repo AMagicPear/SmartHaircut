@@ -1,6 +1,7 @@
 package com.perry.smartposter;
 
 import android.os.Bundle;
+import android.os.Environment;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -11,6 +12,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class Pictures extends AppCompatActivity {
@@ -38,7 +40,19 @@ public class Pictures extends AppCompatActivity {
 
     private ArrayList<DataElement> getMyData() {
         ArrayList<DataElement> dataList = new ArrayList<>();
-        dataList.add(new DataElement(1, R.drawable.fish, "Fish"));
+        File picturesDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        if (picturesDir != null && picturesDir.exists()) {
+            File[] files = picturesDir.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isFile() && file.getName().endsWith(".jpg")) {
+                        dataList.add(new DataElement(0, file.getAbsolutePath(), file.getName()));
+                    }
+                }
+            }
+        } else {
+            Toast.makeText(this, "No pictures directory found", Toast.LENGTH_SHORT).show();
+        }
         return dataList;
     }
 }
