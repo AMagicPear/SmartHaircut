@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,13 +15,15 @@ import java.util.ArrayList;
 
 public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHolder> {
     private final ArrayList<DataElement> mDataList;
+
     public CustomAdapter(ArrayList<DataElement> myData) {
         mDataList = myData;
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder{
+    public static class MyViewHolder extends RecyclerView.ViewHolder {
         private final ImageView mImageView;
         private final TextView mTextView;
+
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             mImageView = itemView.findViewById(R.id.recyclerview_item_image);
@@ -46,18 +47,22 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
         holder.mTextView.setText(mDataList.get(position).mText);
         holder.mTextView.setOnLongClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-            builder.setTitle("Tips")
-                    .setMessage("Do u want to delete?")
-                    .setPositiveButton("Yes", (dialog, which) -> {
-                        mDataList.remove(holder.getAdapterPosition());
-                        notifyDataSetChanged();
-                    }).setNegativeButton("Cancel", null);
+            builder.setTitle("删除图片")
+                    .setMessage("确定删除吗？")
+                    .setPositiveButton("对！", (dialog, which) -> {
+                        int pos = holder.getAdapterPosition();
+                        if (pos != RecyclerView.NO_POSITION) {
+                            mDataList.remove(pos);
+                            notifyItemRemoved(pos);
+                        }
+                    }).setNegativeButton("手滑了", null);
             builder.create().show();
             return true;
         });
     }
 
-    ///@return 返回数据项的数量
+
+    /// @return 返回数据项的数量
     @Override
     public int getItemCount() {
         return mDataList.size();
