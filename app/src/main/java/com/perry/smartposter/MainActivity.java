@@ -155,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
 //                imageProxy.close();
 //            });
         } else imageProxy.close();
+        // Test Commit
     }
 
     private void bindTakePictureButton() {
