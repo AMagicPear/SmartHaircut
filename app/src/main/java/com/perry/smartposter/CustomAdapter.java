@@ -42,7 +42,6 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
     /// 绑定数据到ViewHolder
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        Toast.makeText(holder.mTextView.getContext(), mDataList.get(position).mText, Toast.LENGTH_SHORT).show();
         holder.mImageView.setImageURI(Uri.parse(mDataList.get(position).mImagePath));
         holder.mTextView.setText(mDataList.get(position).mText);
         holder.mTextView.setOnLongClickListener(v -> {
