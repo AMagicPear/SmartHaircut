@@ -1,9 +1,7 @@
 package com.perry.smartposter;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
-import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -47,15 +45,15 @@ public class Pictures extends AppCompatActivity {
         recyclerView.setAdapter(customAdapter);
     }
 
-    private ArrayList<DataElement> getMyData() {
-        ArrayList<DataElement> dataList = new ArrayList<>();
+    private ArrayList<ImageElement> getMyData() {
+        ArrayList<ImageElement> dataList = new ArrayList<>();
         File picturesDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         if (picturesDir != null && picturesDir.exists()) {
             File[] files = picturesDir.listFiles();
             if (files != null) {
                 for (File file : files) {
                     if (file.isFile() && file.getName().endsWith(".jpg")) {
-                        dataList.add(new DataElement(0, file.getAbsolutePath(), file.getName()));
+                        dataList.add(new ImageElement(0, file.getAbsolutePath(), file.getName()));
                     }
                 }
             }

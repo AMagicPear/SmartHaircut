@@ -14,9 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHolder> {
-    private final ArrayList<DataElement> mDataList;
+    private final ArrayList<ImageElement> mDataList;
 
-    public CustomAdapter(ArrayList<DataElement> myData) {
+    public CustomAdapter(ArrayList<ImageElement> myData) {
         mDataList = myData;
     }
 
@@ -43,8 +43,8 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
     /// 绑定数据到ViewHolder
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        holder.mImageView.setImageURI(Uri.parse(mDataList.get(position).mImagePath));
-        holder.mTextView.setText(mDataList.get(position).mText);
+        holder.mImageView.setImageURI(Uri.parse(mDataList.get(position).getMImagePath()));
+        holder.mTextView.setText(mDataList.get(position).getMText());
         holder.mTextView.setOnLongClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
             builder.setTitle("删除图片")
