@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 
 public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHolder> {
+    /// 数据源，注意这是一个引用数据！
     private final ArrayList<DataElement> mDataList;
 
     public CustomAdapter(ArrayList<DataElement> myData) {
@@ -52,7 +53,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
                     .setPositiveButton("对！", (dialog, which) -> {
                         int pos = holder.getAdapterPosition();
                         if (pos != RecyclerView.NO_POSITION) {
-                            mDataList.remove(pos);
+                            DataElementManager.getInstance(v.getContext()).RemoveDataElementAt(pos);
                             notifyItemRemoved(pos);
                         }
                     }).setNegativeButton("手滑了", null);

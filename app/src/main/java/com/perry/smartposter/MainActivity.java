@@ -30,7 +30,6 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.DefaultLifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
 
-import com.google.mlkit.vision.common.InputImage;
 import com.google.mlkit.vision.face.FaceDetection;
 import com.google.mlkit.vision.face.FaceDetector;
 import com.google.mlkit.vision.face.FaceDetectorOptions;
@@ -49,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private static final SimpleDateFormat FILENAME_FORMAT = new SimpleDateFormat("yyMMdd_HHmmss", Locale.CHINA);
     private FaceDetector faceDetector;
     private LifecycleCameraController controller;
+    private DataElementManager manager;
 
     /**
      * 请求相机权限的一个 ActivityResultLauncher
@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
 
         FloatingActionButton viewPicturesButton = findViewById(R.id.view_pictures);
         viewPicturesButton.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, Pictures.class);
+            Intent intent = new Intent(MainActivity.this, PicturesActivity.class);
             startActivity(intent);
         });
     }
@@ -108,6 +108,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Log.d("Perry", "onStart: No Camera Detected.");
         }
+        manager = DataElementManager.getInstance(getApplicationContext());
     }
 
     /// 设置摄像头并绑定生命周期和显示
@@ -125,22 +126,24 @@ public class MainActivity extends AppCompatActivity {
         if (mediaImage != null) {
             File picturesDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
             if (picturesDir == null) {
-                Log.e("MainActivity", "Could not get external pictures directory");
+                Log.e("Perry", "Could not get external pictures directory");
                 imageProxy.close();
                 return;
             }
             File file = new File(picturesDir, makeFileName());
             try (imageProxy; FileOutputStream fos = new FileOutputStream(file)) {
-                Log.d("MainActivity", "Saving image to: " + file.getAbsolutePath());
+                Log.d("Perry", "Saving image to: " + file.getAbsolutePath());
                 ByteBuffer buffer = mediaImage.getPlanes()[0].getBuffer();
                 byte[] bytes = new byte[buffer.remaining()];
                 buffer.get(bytes);
                 fos.write(bytes);
                 fos.flush();
-                Log.d("MainActivity", "Image saved successfully");
+                Log.d("Perry", "Image saved successfully");
             } catch (IOException e) {
-                Log.e("MainActivity", "Error saving image", e);
+                Log.e("Perry", "Error saving image", e);
             }
+            // 保存数据
+            manager.AddDataElement(new DataElement(System.currentTimeMillis(), file.getAbsolutePath(), "Name2"));
 
 //            InputImage image = InputImage.fromMediaImage(mediaImage, imageProxy.getImageInfo().getRotationDegrees());
 //            // 将图像传递给 ML Kit Vision API
@@ -161,18 +164,15 @@ public class MainActivity extends AppCompatActivity {
     private void bindTakePictureButton() {
         FloatingActionButton btn = findViewById(R.id.take_photo);
         btn.setOnClickListener(v ->
-                {
-                    controller.takePicture(ContextCompat.getMainExecutor(v.getContext()), new ImageCapture.OnImageCapturedCallback() {
-                                @Override
-                                public void onCaptureSuccess(@NonNull ImageProxy imageProxy) {
-                                    super.onCaptureSuccess(imageProxy);
-                                    Toast.makeText(getApplicationContext(), R.string.photo_taken, Toast.LENGTH_SHORT).show();
-                                    processImage(imageProxy);
-                                }
+                controller.takePicture(ContextCompat.getMainExecutor(v.getContext()), new ImageCapture.OnImageCapturedCallback() {
+                            @Override
+                            public void onCaptureSuccess(@NonNull ImageProxy imageProxy) {
+                                super.onCaptureSuccess(imageProxy);
+                                Toast.makeText(getApplicationContext(), R.string.photo_taken, Toast.LENGTH_SHORT).show();
+                                processImage(imageProxy);
                             }
-                    );
-
-                }
+                        }
+                )
         );
     }
 
