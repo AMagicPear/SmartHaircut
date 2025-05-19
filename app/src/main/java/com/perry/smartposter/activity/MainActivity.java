@@ -1,4 +1,4 @@
-package com.perry.smartposter;
+package com.perry.smartposter.activity;
 
 import android.Manifest;
 import android.content.Intent;
@@ -33,6 +33,9 @@ import androidx.lifecycle.LifecycleOwner;
 import com.google.mlkit.vision.face.FaceDetection;
 import com.google.mlkit.vision.face.FaceDetector;
 import com.google.mlkit.vision.face.FaceDetectorOptions;
+import com.perry.smartposter.model.DataElement;
+import com.perry.smartposter.model.DataElementManager;
+import com.perry.smartposter.R;
 
 import org.jspecify.annotations.NonNull;
 

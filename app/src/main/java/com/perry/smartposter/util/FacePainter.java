@@ -1,4 +1,4 @@
-package com.perry.smartposter;
+package com.perry.smartposter.util;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;

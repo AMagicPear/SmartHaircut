@@ -1,4 +1,4 @@
-package com.perry.smartposter;
+package com.perry.smartposter.activity;
 
 import android.os.Bundle;
 import android.widget.ImageButton;
@@ -10,6 +10,10 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+
+import com.perry.smartposter.adapter.CustomAdapter;
+import com.perry.smartposter.model.DataElementManager;
+import com.perry.smartposter.R;
 
 public class PicturesActivity extends AppCompatActivity {
 

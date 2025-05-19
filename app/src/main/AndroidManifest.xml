@@ -18,10 +18,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SmartPoster">
         <activity
-            android:name=".PicturesActivity"
+            android:name=".activity.PicturesActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

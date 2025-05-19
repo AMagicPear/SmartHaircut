@@ -1,4 +1,4 @@
-package com.perry.smartposter;
+package com.perry.smartposter.adapter;
 
 import android.app.AlertDialog;
 import android.net.Uri;
@@ -10,6 +10,10 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.perry.smartposter.model.DataElement;
+import com.perry.smartposter.model.DataElementManager;
+import com.perry.smartposter.R;
 
 import java.util.ArrayList;
 

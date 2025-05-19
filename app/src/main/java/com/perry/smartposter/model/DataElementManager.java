@@ -1,4 +1,4 @@
-package com.perry.smartposter;
+package com.perry.smartposter.model;
 
 import android.content.Context;
 import android.util.Log;
@@ -11,7 +11,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 public class DataElementManager {
     private static final String RECORD_FILE_NAME = "data_elements.toml";
