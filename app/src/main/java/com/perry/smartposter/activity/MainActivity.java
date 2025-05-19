@@ -33,6 +33,7 @@ import com.google.mlkit.vision.face.FaceDetectorOptions;
 import com.perry.smartposter.model.DataElement;
 import com.perry.smartposter.model.DataElementManager;
 import com.perry.smartposter.R;
+import com.perry.smartposter.model.ImageAnalyzer;
 
 import org.jspecify.annotations.NonNull;
 
@@ -49,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     private FaceDetector faceDetector;
     private LifecycleCameraController controller;
     private DataElementManager manager;
+    private ImageAnalyzer analyzer;
 
     /**
      * 请求相机权限的一个 ActivityResultLauncher
@@ -109,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
                 DefaultLifecycleObserver.super.onDestroy(owner);
             }
         });
+        analyzer = new ImageAnalyzer(faceDetector);
     }
 
     /// 设置摄像头并绑定生命周期和显示
@@ -123,6 +126,10 @@ public class MainActivity extends AppCompatActivity {
     @OptIn(markerClass = ExperimentalGetImage.class)
     private void processImage(ImageProxy imageProxy) {
         Image mediaImage = imageProxy.getImage();
+
+        analyzer.analyze(imageProxy);
+
+
         if (mediaImage != null) {
             File picturesDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
             if (picturesDir == null) {
