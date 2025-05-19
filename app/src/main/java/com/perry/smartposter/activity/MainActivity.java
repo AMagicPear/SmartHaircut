@@ -10,9 +10,9 @@ import android.util.Log;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import android.view.WindowManager;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.OptIn;
@@ -24,9 +24,6 @@ import androidx.camera.core.ImageProxy;
 import androidx.camera.view.LifecycleCameraController;
 import androidx.camera.view.PreviewView;
 import androidx.core.content.ContextCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.DefaultLifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
 
@@ -73,6 +70,32 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        // 设置透明状态栏和导航栏
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        getWindow().setNavigationBarColor(ContextCompat.getColor(this, android.R.color.transparent));
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, android.R.color.transparent));
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (getApplicationContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
+            mRequestLauncher.launch(Manifest.permission.CAMERA);
+        } else {
+            Log.d("Perry", "onStart: No Camera Detected.");
+        }
+        manager = DataElementManager.getInstance(getApplicationContext());
+
+        // 绑定 view_pictures 按钮的点击事件
+        FloatingActionButton viewPicturesBtn = findViewById(R.id.view_pictures);
+        viewPicturesBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, PicturesActivity.class);
+            startActivity(intent);
+        });
+
         // 初始化 FaceDetector
         FaceDetectorOptions realTimeOpts = new FaceDetectorOptions.Builder()
                 .setContourMode(FaceDetectorOptions.CONTOUR_MODE_ALL).build();
@@ -86,32 +109,6 @@ public class MainActivity extends AppCompatActivity {
                 DefaultLifecycleObserver.super.onDestroy(owner);
             }
         });
-
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_main);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
-
-        FloatingActionButton viewPicturesButton = findViewById(R.id.view_pictures);
-        viewPicturesButton.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, PicturesActivity.class);
-            startActivity(intent);
-        });
-    }
-
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (getApplicationContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
-            mRequestLauncher.launch(Manifest.permission.CAMERA);
-        } else {
-            Log.d("Perry", "onStart: No Camera Detected.");
-        }
-        manager = DataElementManager.getInstance(getApplicationContext());
     }
 
     /// 设置摄像头并绑定生命周期和显示
