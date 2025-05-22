@@ -17,7 +17,7 @@ public class DataElementManager {
     private final File recordFile;
     private final ArrayList<DataElement> dataList;
 
-    // 单例实例
+    /// 单例实例
     private static DataElementManager instance;
 
     private DataElementManager(Context context) {

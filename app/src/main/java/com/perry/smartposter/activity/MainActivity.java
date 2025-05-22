@@ -129,43 +129,28 @@ public class MainActivity extends AppCompatActivity {
 
         analyzer.analyze(imageProxy);
 
-
-        if (mediaImage != null) {
-            File picturesDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-            if (picturesDir == null) {
-                Log.e("Perry", "Could not get external pictures directory");
-                imageProxy.close();
-                return;
-            }
-            File file = new File(picturesDir, makeFileName());
-            try (imageProxy; FileOutputStream fos = new FileOutputStream(file)) {
-                Log.d("Perry", "Saving image to: " + file.getAbsolutePath());
-                ByteBuffer buffer = mediaImage.getPlanes()[0].getBuffer();
-                byte[] bytes = new byte[buffer.remaining()];
-                buffer.get(bytes);
-                fos.write(bytes);
-                fos.flush();
-                Log.d("Perry", "Image saved successfully");
-            } catch (IOException e) {
-                Log.e("Perry", "Error saving image", e);
-            }
-            // 保存数据
-            manager.AddDataElement(new DataElement(System.currentTimeMillis(), file.getAbsolutePath(), "Name2"));
-
-//            InputImage image = InputImage.fromMediaImage(mediaImage, imageProxy.getImageInfo().getRotationDegrees());
-//            // 将图像传递给 ML Kit Vision API
-//            faceDetector.process(image).addOnSuccessListener(faces -> {
-//                // 任务成功完成
-//                for (var face : faces) {
-//                    Log.d("Perry", String.format("Face: %s", face.getTrackingId()));
-//                }
-//            }).addOnFailureListener(e -> {
-//                // 任务失败
-//                Log.e("MainActivity", "Face detection failed", e);
+//        if (mediaImage != null) {
+//            File picturesDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+//            if (picturesDir == null) {
+//                Log.e("Perry", "Could not get external pictures directory");
 //                imageProxy.close();
-//            });
-        } else imageProxy.close();
-        // Test Commit
+//                return;
+//            }
+//            File file = new File(picturesDir, makeFileName());
+//            try (imageProxy; FileOutputStream fos = new FileOutputStream(file)) {
+//                Log.d("Perry", "Saving image to: " + file.getAbsolutePath());
+//                ByteBuffer buffer = mediaImage.getPlanes()[0].getBuffer();
+//                byte[] bytes = new byte[buffer.remaining()];
+//                buffer.get(bytes);
+//                fos.write(bytes);
+//                fos.flush();
+//                Log.d("Perry", "Image saved successfully");
+//            } catch (IOException e) {
+//                Log.e("Perry", "Error saving image", e);
+//            }
+//            // 保存数据
+//            manager.AddDataElement(new DataElement(System.currentTimeMillis(), file.getAbsolutePath(), "Name2"));
+//        } else imageProxy.close();
     }
 
     private void bindTakePictureButton() {
