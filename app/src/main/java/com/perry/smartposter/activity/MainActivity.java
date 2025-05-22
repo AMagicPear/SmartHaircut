@@ -3,9 +3,7 @@ package com.perry.smartposter.activity;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.media.Image;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -30,24 +28,19 @@ import androidx.lifecycle.LifecycleOwner;
 import com.google.mlkit.vision.face.FaceDetection;
 import com.google.mlkit.vision.face.FaceDetector;
 import com.google.mlkit.vision.face.FaceDetectorOptions;
-import com.perry.smartposter.model.DataElement;
 import com.perry.smartposter.model.DataElementManager;
 import com.perry.smartposter.R;
 import com.perry.smartposter.model.ImageAnalyzer;
 
 import org.jspecify.annotations.NonNull;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
     private static final SimpleDateFormat FILENAME_FORMAT = new SimpleDateFormat("yyMMdd_HHmmss", Locale.CHINA);
-    private FaceDetector faceDetector;
+    public FaceDetector faceDetector;
     private LifecycleCameraController controller;
     private DataElementManager manager;
     private ImageAnalyzer analyzer;
@@ -111,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
                 DefaultLifecycleObserver.super.onDestroy(owner);
             }
         });
-        analyzer = new ImageAnalyzer(faceDetector);
+        analyzer = new ImageAnalyzer(this);
     }
 
     /// 设置摄像头并绑定生命周期和显示
@@ -125,10 +118,7 @@ public class MainActivity extends AppCompatActivity {
 
     @OptIn(markerClass = ExperimentalGetImage.class)
     private void processImage(ImageProxy imageProxy) {
-        Image mediaImage = imageProxy.getImage();
-
         analyzer.analyze(imageProxy);
-
 //        if (mediaImage != null) {
 //            File picturesDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
 //            if (picturesDir == null) {
