@@ -15,8 +15,8 @@
 
     <ImageView
         android:id="@+id/bottom_sheet_img"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_width="244dp"
+        android:layout_height="326dp"
         android:scaleType="centerCrop" />
     <!-- 横向滑动数字列表 -->
 <!--    <androidx.recyclerview.widget.RecyclerView-->

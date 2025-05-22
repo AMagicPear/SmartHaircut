@@ -1,7 +1,9 @@
 package com.perry.smartposter.adapter;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.perry.smartposter.activity.PictureDetail;
 import com.perry.smartposter.model.DataElement;
 import com.perry.smartposter.model.DataElementManager;
 import com.perry.smartposter.R;
@@ -25,7 +28,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
         mDataList = myData;
     }
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder {
+    public class MyViewHolder extends RecyclerView.ViewHolder {
         private final ImageView mImageView;
         private final TextView mTextView;
 
@@ -33,6 +36,10 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
             super(itemView);
             mImageView = itemView.findViewById(R.id.recyclerview_item_image);
             mTextView = itemView.findViewById(R.id.recyclerview_item_text);
+            mImageView.setOnClickListener(v -> {
+                Intent intent = new Intent(v.getContext(), PictureDetail.class);
+                Log.d("PERRY", "onClick: " + mDataList.get(getAdapterPosition()).id);
+            });
         }
     }
 

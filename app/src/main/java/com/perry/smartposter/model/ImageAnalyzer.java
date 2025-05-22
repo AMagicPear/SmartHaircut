@@ -1,11 +1,11 @@
 package com.perry.smartposter.model;
 
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.PointF;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -64,11 +64,20 @@ public class ImageAnalyzer implements ImageAnalysis.Analyzer {
 
     private void showBottomSheet(Bitmap bitmap, List<PointF> faceContourPoints) {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(activity);
-        View bottomSheetView = LayoutInflater.from(activity).inflate(R.layout.bottom_sheet_layout, null);
+        // 修复第68行：使用父布局容器作为视图根参数
+        View bottomSheetView = LayoutInflater.from(activity).inflate(R.layout.bottom_sheet_layout, activity.findViewById(android.R.id.content), false);
         ImageView imageView = bottomSheetView.findViewById(R.id.bottom_sheet_img);
-//        FacePainter.drawFaceContours(bitmap, faceContourPoints, imageView);
-//        imageView.setImageBitmap(bitmap);
-        imageView.setImageResource(R.drawable.fish);
+        FacePainter.drawFaceContours(bitmap, faceContourPoints, imageView);
+        imageView.setImageBitmap(bitmap);
+//        imageView.setImageResource(R.drawable.fish);
+        Button yesButton = bottomSheetView.findViewById(R.id.yes_button);
+        Button noButton = bottomSheetView.findViewById(R.id.no_button);
+        yesButton.setOnClickListener(v -> {
+            Log.d("Perry", "showBottomSheet: yesbutton");
+        });
+        noButton.setOnClickListener(v -> {
+            Log.d("Perry", "showBottomSheet: nobutton");
+        });
         bottomSheetDialog.setContentView(bottomSheetView);
 //        bottomSheetView.getLayoutParams().height = (int) (activity.getResources().getDisplayMetrics().heightPixels * 0.5);
         bottomSheetDialog.show();
