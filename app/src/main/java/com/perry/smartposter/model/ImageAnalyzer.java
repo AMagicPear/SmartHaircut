@@ -77,6 +77,7 @@ public class ImageAnalyzer implements ImageAnalysis.Analyzer {
         });
         noButton.setOnClickListener(v -> {
             Log.d("Perry", "showBottomSheet: nobutton");
+            bottomSheetDialog.dismiss();
         });
         bottomSheetDialog.setContentView(bottomSheetView);
 //        bottomSheetView.getLayoutParams().height = (int) (activity.getResources().getDisplayMetrics().heightPixels * 0.5);
