@@ -38,6 +38,8 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
             mTextView = itemView.findViewById(R.id.recyclerview_item_text);
             mImageView.setOnClickListener(v -> {
                 Intent intent = new Intent(v.getContext(), PictureDetail.class);
+                intent.putExtra("id", mDataList.get(getAdapterPosition()).id);
+                v.getContext().startActivity(intent);
                 Log.d("PERRY", "onClick: " + mDataList.get(getAdapterPosition()).id);
             });
         }

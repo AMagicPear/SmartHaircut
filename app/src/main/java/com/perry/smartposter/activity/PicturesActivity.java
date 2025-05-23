@@ -11,6 +11,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import com.google.android.material.appbar.MaterialToolbar;
 import com.perry.smartposter.adapter.CustomAdapter;
 import com.perry.smartposter.model.DataElementManager;
 import com.perry.smartposter.R;
@@ -28,11 +29,10 @@ public class PicturesActivity extends AppCompatActivity {
             return insets;
         });
 
-        // 设置返回按钮的点击事件监听器
-        ImageButton backButton = findViewById(R.id.back_button);
-        backButton.setOnClickListener(v -> {
-            finish(); // 直接关闭当前活动，返回到上一个活动（MainActivity）
-        });
+        // 获取 MaterialToolbar 实例
+        MaterialToolbar topAppBar = findViewById(R.id.top_app_bar);
+        // 为返回按钮设置点击事件
+        topAppBar.setNavigationOnClickListener(v -> finish());
     }
 
     @Override

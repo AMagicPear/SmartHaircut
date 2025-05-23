@@ -116,42 +116,16 @@ public class MainActivity extends AppCompatActivity {
         previewView.setController(controller);
     }
 
-    @OptIn(markerClass = ExperimentalGetImage.class)
-    private void processImage(ImageProxy imageProxy) {
-        analyzer.analyze(imageProxy);
-//        if (mediaImage != null) {
-//            File picturesDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-//            if (picturesDir == null) {
-//                Log.e("Perry", "Could not get external pictures directory");
-//                imageProxy.close();
-//                return;
-//            }
-//            File file = new File(picturesDir, makeFileName());
-//            try (imageProxy; FileOutputStream fos = new FileOutputStream(file)) {
-//                Log.d("Perry", "Saving image to: " + file.getAbsolutePath());
-//                ByteBuffer buffer = mediaImage.getPlanes()[0].getBuffer();
-//                byte[] bytes = new byte[buffer.remaining()];
-//                buffer.get(bytes);
-//                fos.write(bytes);
-//                fos.flush();
-//                Log.d("Perry", "Image saved successfully");
-//            } catch (IOException e) {
-//                Log.e("Perry", "Error saving image", e);
-//            }
-//            // 保存数据
-//            manager.AddDataElement(new DataElement(System.currentTimeMillis(), file.getAbsolutePath(), "Name2"));
-//        } else imageProxy.close();
-    }
-
     private void bindTakePictureButton() {
         FloatingActionButton btn = findViewById(R.id.take_photo);
         btn.setOnClickListener(v ->
                 controller.takePicture(ContextCompat.getMainExecutor(v.getContext()), new ImageCapture.OnImageCapturedCallback() {
-                            @Override
+                    @OptIn(markerClass = ExperimentalGetImage.class)
+                    @Override
                             public void onCaptureSuccess(@NonNull ImageProxy imageProxy) {
                                 super.onCaptureSuccess(imageProxy);
                                 Toast.makeText(getApplicationContext(), R.string.photo_taken, Toast.LENGTH_SHORT).show();
-                                processImage(imageProxy);
+                                analyzer.analyze(imageProxy);
                             }
                         }
                 )
