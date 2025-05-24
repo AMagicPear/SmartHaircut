@@ -1,5 +1,7 @@
 package com.perry.smartposter.activity;
 
+import static com.perry.smartposter.util.ImageStorage.FILENAME_FORMAT;
+
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -39,10 +41,9 @@ import java.util.Date;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
-    private static final SimpleDateFormat FILENAME_FORMAT = new SimpleDateFormat("yyMMdd_HHmmss", Locale.CHINA);
     public FaceDetector faceDetector;
     private LifecycleCameraController controller;
-    private DataElementManager manager;
+    public DataElementManager manager;
     private ImageAnalyzer analyzer;
 
     /**
@@ -130,9 +131,5 @@ public class MainActivity extends AppCompatActivity {
                         }
                 )
         );
-    }
-
-    private String makeFileName() {
-        return "IMG_" + FILENAME_FORMAT.format(new Date()) + ".jpg";
     }
 }

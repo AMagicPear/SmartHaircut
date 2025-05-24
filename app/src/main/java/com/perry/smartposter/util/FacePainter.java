@@ -10,8 +10,7 @@ import android.widget.ImageView;
 import java.util.List;
 
 public final class FacePainter {
-    /// 在Bitmap上绘制线条示例代码
-    public static void drawFaceContours(Bitmap capturedImageBitmap, List<PointF> faceContourPoints, ImageView imageView) {
+    public static Bitmap drawFaceContours(Bitmap capturedImageBitmap, List<PointF> faceContourPoints) {
         if (capturedImageBitmap != null && !capturedImageBitmap.isRecycled() && faceContourPoints != null && !faceContourPoints.isEmpty()) {
             // 根据原始bitmap图创建可修改副本
             Bitmap mutableBitmap = capturedImageBitmap.copy(Bitmap.Config.ARGB_8888, true);
@@ -37,8 +36,8 @@ public final class FacePainter {
                 canvas.drawLine(lastPoint.x, lastPoint.y, firstPoint.x, firstPoint.y, paint);
             }
 
-            // 在参数传入的ImageView上显示图像副本
-            imageView.setImageBitmap(mutableBitmap);
+            return mutableBitmap;
         }
+        return null;
     }
 }

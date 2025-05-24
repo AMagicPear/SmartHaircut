@@ -89,7 +89,9 @@ public class DataElementManager {
         try (FileReader reader = new FileReader(recordFile)) {
             Toml toml = new Toml().read(reader);
             CollectionsWrapper wrapper = toml.to(CollectionsWrapper.class);
-            return wrapper.mData != null ? wrapper.mData : new ArrayList<>();
+            var readData = wrapper.mData != null ? wrapper.mData : new ArrayList<DataElement>();
+            readData.removeIf(data -> data.mImagePath == null || data.mImagePath.isEmpty() || data.mText == null || data.mText.isEmpty());
+            return readData;
         } catch (IOException e) {
             e.printStackTrace();
             return new ArrayList<>();
