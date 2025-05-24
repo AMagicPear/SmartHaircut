@@ -84,13 +84,13 @@ public class DataElementManager {
      * 从 TOML 文件中读取 List<DataElement>
      */
     private ArrayList<DataElement> loadDataElements() {
-        if (!recordFile.exists()) return new ArrayList<>();
+        if (!recordFile.exists()) return new ArrayList<DataElement>();
 
         try (FileReader reader = new FileReader(recordFile)) {
             Toml toml = new Toml().read(reader);
             CollectionsWrapper wrapper = toml.to(CollectionsWrapper.class);
             var readData = wrapper.mData != null ? wrapper.mData : new ArrayList<DataElement>();
-            readData.removeIf(data -> data.mImagePath == null || data.mImagePath.isEmpty() || data.mText == null || data.mText.isEmpty());
+            readData.removeIf(data -> data.mImagePath == null || data.mImagePath.isEmpty());
             return readData;
         } catch (IOException e) {
             e.printStackTrace();

@@ -19,6 +19,7 @@ import androidx.camera.core.ImageAnalysis;
 import androidx.camera.core.ImageProxy;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.mlkit.vision.common.InputImage;
 import com.google.mlkit.vision.face.Face;
 import com.perry.smartposter.R;
@@ -84,10 +85,15 @@ public class ImageAnalyzer implements ImageAnalysis.Analyzer {
         imageView.setImageBitmap(cachedBitmap);
         Button yesButton = bottomSheetView.findViewById(R.id.yes_button);
         Button noButton = bottomSheetView.findViewById(R.id.no_button);
+        TextInputEditText nameEditText = bottomSheetView.findViewById(R.id.text_input);
         yesButton.setOnClickListener(v -> {
+            var text = nameEditText.getText();
+            if (text == null || text.toString().isEmpty()) {
+                return;
+            }
             Log.d("Perry", "showBottomSheet: yesbutton");
             var filePath = ImageStorage.saveBitmapImage(cachedBitmap, activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES));
-            activity.manager.AddDataElement(new DataElement(System.currentTimeMillis(), filePath, "Name"));
+            activity.manager.AddDataElement(new DataElement(System.currentTimeMillis(), filePath, text.toString(), 0));
             Toast.makeText(activity, "保存成功", Toast.LENGTH_SHORT).show();
             bottomSheetDialog.dismiss();
         });
