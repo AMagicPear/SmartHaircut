@@ -28,14 +28,14 @@ public final class FacePainter {
         for (int i = 0; i < faceContourPoints.size() - 1; i++) {
             PointF startPoint = faceContourPoints.get(i);
             PointF endPoint = faceContourPoints.get(i + 1);
-            canvas.drawLine(startPoint.x / 10, startPoint.y / 10, endPoint.x / 10, endPoint.y / 10, paint);
+            canvas.drawLine(startPoint.x * scaleFactor, startPoint.y * scaleFactor, endPoint.x * scaleFactor, endPoint.y * scaleFactor, paint);
         }
 
         // 连接轮廓的首尾两点
         if (faceContourPoints.size() > 1) {
             PointF firstPoint = faceContourPoints.get(0);
             PointF lastPoint = faceContourPoints.get(faceContourPoints.size() - 1);
-            canvas.drawLine(lastPoint.x / 10, lastPoint.y / 10, firstPoint.x / 10, firstPoint.y / 10, paint);
+            canvas.drawLine(lastPoint.x * scaleFactor, lastPoint.y * scaleFactor, firstPoint.x * scaleFactor, firstPoint.y * scaleFactor, paint);
         }
 
         // 设置View背景
