@@ -40,6 +40,8 @@ public class ImageAnalyzer implements ImageAnalysis.Analyzer {
     private View bottomSheetView;
     /// 用于缓存过程中的bitmap
     private Bitmap cachedBitmap;
+    public static final int IMAGE_VIEW_WIDTH = 244;
+    public static final int IMAGE_VIEW_HEIGHT = 326;
 
     public ImageAnalyzer(MainActivity activity) {
         this.activity = activity;
@@ -91,7 +93,7 @@ public class ImageAnalyzer implements ImageAnalysis.Analyzer {
         imageView.setImageBitmap(cachedBitmap);
         setupButtons(bottomSheetView);
         try {
-            FacePainter.drawHaircut(activity, bottomSheetView.findViewById(R.id.bottom_sheet_overlay), faceContourPoints);
+            FacePainter.drawHaircut(activity, bottomSheetView.findViewById(R.id.bottom_sheet_overlay), faceContourPoints, (float) IMAGE_VIEW_WIDTH / cachedBitmap.getWidth());
         } catch (Exception e) {
             e.printStackTrace();
         }
