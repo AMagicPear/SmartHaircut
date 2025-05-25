@@ -18,7 +18,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SmartPoster">
         <activity
-            android:name=".activity.PictureDetail"
+            android:name=".activity.PictureDetailActivity"
             android:exported="false" />
         <activity
             android:name=".activity.PicturesActivity"

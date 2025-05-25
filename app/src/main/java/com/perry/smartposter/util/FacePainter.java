@@ -38,9 +38,63 @@ public final class FacePainter {
             canvas.drawLine(lastPoint.x * scaleFactor, lastPoint.y * scaleFactor, firstPoint.x * scaleFactor, firstPoint.y * scaleFactor, paint);
         }
 
+
+        // 基准点绘制
+        if (!faceContourPoints.isEmpty()) {
+            // 计算发型基准点
+            PointF hairBasePoint = calculateHairBasePoint(faceContourPoints);
+
+            // 创建蓝色画笔
+            Paint basePointPaint = new Paint();
+            basePointPaint.setColor(Color.BLUE);
+            basePointPaint.setStrokeWidth(8f);
+            basePointPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+
+            // 绘制基准点（圆形标记）
+            canvas.drawCircle(
+                    hairBasePoint.x * scaleFactor,
+                    hairBasePoint.y * scaleFactor,
+                    12f, // 点半径
+                    basePointPaint
+            );
+        }
+
         // 设置View背景
         overlayView.setBackground(new BitmapDrawable(activity.getResources(), overlayBitmap));
         return overlayBitmap;
+    }
+
+    // 在 FacePainter 类中添加以下方法
+    private static PointF calculateHairBasePoint(List<PointF> faceContourPoints) {
+        // 找到面部轮廓的最高点（Y值最小）和最低点（Y值最大）
+        float minY = Float.MAX_VALUE;
+        float maxY = Float.MIN_VALUE;
+        float sumX = 0;
+        int count = 0;
+
+        for (PointF point : faceContourPoints) {
+            if (point.y < minY) {
+                minY = point.y;
+            }
+            if (point.y > maxY) {
+                maxY = point.y;
+            }
+        }
+
+        for (PointF point : faceContourPoints){
+            // 仅处理上半部分的面部轮廓点（Y值小于中点）
+            if (point.y < (minY + maxY) / 2) {
+                sumX += point.x;
+                count++;
+            }
+        }
+
+        // 计算平均X坐标和基准Y坐标
+        float baseX = count > 0 ? sumX / count : faceContourPoints.get(0).x;
+        float faceHeight = maxY - minY;
+        float baseY = minY - faceHeight * 0.2f; // 在额头基础上再上移20%的脸部高度
+
+        return new PointF(baseX, baseY);
     }
 
     public static Bitmap mergeBitmaps(Bitmap bottomBitmap, Bitmap topBitmap) {

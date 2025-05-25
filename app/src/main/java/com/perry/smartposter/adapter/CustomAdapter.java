@@ -13,7 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.perry.smartposter.activity.PictureDetail;
+import com.perry.smartposter.activity.PictureDetailActivity;
 import com.perry.smartposter.model.DataElement;
 import com.perry.smartposter.model.DataElementManager;
 import com.perry.smartposter.R;
@@ -37,7 +37,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
             mImageView = itemView.findViewById(R.id.recyclerview_item_image);
             mTextView = itemView.findViewById(R.id.recyclerview_item_text);
             mImageView.setOnClickListener(v -> {
-                Intent intent = new Intent(v.getContext(), PictureDetail.class);
+                Intent intent = new Intent(v.getContext(), PictureDetailActivity.class);
                 intent.putExtra("id", mDataList.get(getAdapterPosition()).id);
                 v.getContext().startActivity(intent);
                 Log.d("PERRY", "onClick: " + mDataList.get(getAdapterPosition()).id);

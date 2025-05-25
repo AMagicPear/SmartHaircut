@@ -13,7 +13,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.perry.smartposter.R;
 
-public class PictureDetail extends AppCompatActivity {
+public class PictureDetailActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
