@@ -92,8 +92,9 @@ public class ImageAnalyzer implements ImageAnalysis.Analyzer {
         Log.d("Perry", "Face contour points size: " + faceContourPoints.size());
         imageView.setImageBitmap(cachedBitmap);
         setupButtons(bottomSheetView);
+        // 在叠加层上绘制发型
         try {
-            FacePainter.drawHaircut(activity, bottomSheetView.findViewById(R.id.bottom_sheet_overlay), faceContourPoints, (float) IMAGE_VIEW_WIDTH / cachedBitmap.getWidth());
+            FacePainter.drawHaircut(activity, bottomSheetView.findViewById(R.id.bottom_sheet_overlay), faceContourPoints, (float) IMAGE_VIEW_WIDTH / cachedBitmap.getWidth(), R.drawable.male_1);
         } catch (Exception e) {
             e.printStackTrace();
         }

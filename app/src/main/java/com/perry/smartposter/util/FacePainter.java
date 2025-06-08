@@ -5,58 +5,41 @@ import static com.perry.smartposter.model.ImageAnalyzer.IMAGE_VIEW_WIDTH;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
 import android.view.View;
 
+import com.perry.smartposter.R;
+
 import java.util.List;
 
 public final class FacePainter {
 
-    public static Bitmap drawHaircut(Activity activity, View overlayView, List<PointF> faceContourPoints, float scaleFactor) {
+    public static Bitmap drawHaircut(Activity activity, View overlayView, List<PointF> faceContourPoints, float scaleFactor, int hairStyleImgId) {
         Bitmap overlayBitmap = Bitmap.createBitmap(IMAGE_VIEW_WIDTH, IMAGE_VIEW_HEIGHT, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(overlayBitmap);
-
-        Paint paint = new Paint();
-        paint.setColor(Color.RED);
-        paint.setStrokeWidth(1f);
-        paint.setStyle(Paint.Style.STROKE);
-        // 遍历脸轮廓数组，依次连线
-        for (int i = 0; i < faceContourPoints.size() - 1; i++) {
-            PointF startPoint = faceContourPoints.get(i);
-            PointF endPoint = faceContourPoints.get(i + 1);
-            canvas.drawLine(startPoint.x * scaleFactor, startPoint.y * scaleFactor, endPoint.x * scaleFactor, endPoint.y * scaleFactor, paint);
-        }
-
-        // 连接轮廓的首尾两点
-        if (faceContourPoints.size() > 1) {
-            PointF firstPoint = faceContourPoints.get(0);
-            PointF lastPoint = faceContourPoints.get(faceContourPoints.size() - 1);
-            canvas.drawLine(lastPoint.x * scaleFactor, lastPoint.y * scaleFactor, firstPoint.x * scaleFactor, firstPoint.y * scaleFactor, paint);
-        }
-
-
         // 基准点绘制
         if (!faceContourPoints.isEmpty()) {
             // 计算发型基准点
             PointF hairBasePoint = calculateHairBasePoint(faceContourPoints);
-
-            // 创建蓝色画笔
-            Paint basePointPaint = new Paint();
-            basePointPaint.setColor(Color.BLUE);
-            basePointPaint.setStrokeWidth(8f);
-            basePointPaint.setStyle(Paint.Style.FILL_AND_STROKE);
-
-            // 绘制基准点（圆形标记）
-            canvas.drawCircle(
-                    hairBasePoint.x * scaleFactor,
-                    hairBasePoint.y * scaleFactor,
-                    12f, // 点半径
-                    basePointPaint
+            // 加载发型图片
+            Bitmap hairBitmap = BitmapFactory.decodeResource(activity.getResources(), hairStyleImgId);
+            // 计算图片绘制位置（使图片中心对齐基准点）
+            Matrix matrix = new Matrix();
+            float scale = 0.08f; // 缩放比例
+            matrix.postScale(scale, scale);
+            matrix.postTranslate(
+                    hairBasePoint.x * scaleFactor - hairBitmap.getWidth()*scale/2f,
+                    hairBasePoint.y * scaleFactor - hairBitmap.getHeight()*scale/2f + 30f
             );
+            canvas.drawBitmap(hairBitmap, matrix, null);
+            // 绘制发型图片（中心对齐基准点）
+            canvas.drawBitmap(hairBitmap, matrix, null);
         }
 
         // 设置View背景
@@ -81,7 +64,7 @@ public final class FacePainter {
             }
         }
 
-        for (PointF point : faceContourPoints){
+        for (PointF point : faceContourPoints) {
             // 仅处理上半部分的面部轮廓点（Y值小于中点）
             if (point.y < (minY + maxY) / 2) {
                 sumX += point.x;
