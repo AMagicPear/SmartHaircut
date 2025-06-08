@@ -23,7 +23,7 @@ import java.util.Map;
 
 public final class FacePainter {
 
-    public static Bitmap drawHaircut(Activity activity, View overlayView, List<PointF> faceContourPoints, float scaleFactor, int hairStyleImgId) {
+    public static Bitmap drawHaircut(Activity activity, View overlayView, List<PointF> faceContourPoints, float scaleFactor, int hairStyleImgId, float postScaleFactor) {
         Bitmap overlayBitmap = Bitmap.createBitmap(IMAGE_VIEW_WIDTH, IMAGE_VIEW_HEIGHT, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(overlayBitmap);
         // 基准点绘制
@@ -37,7 +37,7 @@ public final class FacePainter {
             Bitmap hairBitmap = BitmapFactory.decodeResource(activity.getResources(), hairStyleImgId);
             // 计算图片绘制位置（使图片中心对齐基准点）
             Matrix matrix = new Matrix();
-            float scale = 0.00006f * faceHeight; // 缩放比例
+            float scale = 0.00006f * faceHeight * postScaleFactor; // 缩放比例
             matrix.postScale(scale, scale);
             matrix.postTranslate(
                     hairBasePoint.x * scaleFactor - hairBitmap.getWidth()*scale/2f,

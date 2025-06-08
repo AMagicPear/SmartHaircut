@@ -32,6 +32,7 @@ import com.perry.smartposter.util.FacePainter;
 import com.perry.smartposter.util.ImageStorage;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ImageAnalyzer implements ImageAnalysis.Analyzer {
@@ -40,9 +41,24 @@ public class ImageAnalyzer implements ImageAnalysis.Analyzer {
     private View bottomSheetView;
     /// 用于缓存过程中的bitmap
     private Bitmap cachedBitmap;
+    private View overlayView;
     public static final int IMAGE_VIEW_WIDTH = 244;
     public static final int IMAGE_VIEW_HEIGHT = 326;
+    public static ArrayList<Integer> hairStyleImgIds = new java.util.ArrayList<Integer>();
+    private int currentHairStyle = 0;
 
+    static {
+        hairStyleImgIds.add(R.drawable.male_1);
+        hairStyleImgIds.add(R.drawable.male_2);
+        hairStyleImgIds.add(R.drawable.male_3);
+    }
+
+    public static ArrayList<Float> hairCutPostScaleFactor =  new java.util.ArrayList<>();
+    static {
+        hairCutPostScaleFactor.add(1f);
+        hairCutPostScaleFactor.add(0.7f);
+        hairCutPostScaleFactor.add(0.9f);
+    }
     public ImageAnalyzer(MainActivity activity) {
         this.activity = activity;
     }
@@ -87,19 +103,34 @@ public class ImageAnalyzer implements ImageAnalysis.Analyzer {
     private void showBottomSheet(List<PointF> faceContourPoints) {
         bottomSheetDialog = new BottomSheetDialog(activity);
         bottomSheetView = LayoutInflater.from(activity).inflate(R.layout.bottom_sheet_layout, activity.findViewById(android.R.id.content), false);
+        overlayView = bottomSheetView.findViewById(R.id.bottom_sheet_overlay);
+        Button leftButton = bottomSheetView.findViewById(R.id.left_button);
+        Button rightButton = bottomSheetView.findViewById(R.id.right_button);
+        leftButton.setOnClickListener(v -> {
+            currentHairStyle = (currentHairStyle - 1 + hairStyleImgIds.size()) % hairStyleImgIds.size();
+            paintWithIndex(faceContourPoints, currentHairStyle);
+        });
+        rightButton.setOnClickListener(v -> {
+            currentHairStyle = (currentHairStyle + 1) % hairStyleImgIds.size();
+            paintWithIndex(faceContourPoints, currentHairStyle);
+        });
         ImageView imageView = bottomSheetView.findViewById(R.id.bottom_sheet_img);
         Log.d("Perry", "Bitmap is null? " + (cachedBitmap == null));
         Log.d("Perry", "Face contour points size: " + faceContourPoints.size());
         imageView.setImageBitmap(cachedBitmap);
         setupButtons(bottomSheetView);
         // 在叠加层上绘制发型
+        paintWithIndex(faceContourPoints, currentHairStyle);
+        bottomSheetDialog.setContentView(bottomSheetView);
+        bottomSheetDialog.show();
+    }
+
+    private void paintWithIndex(List<PointF> faceContourPoints,int index){
         try {
-            FacePainter.drawHaircut(activity, bottomSheetView.findViewById(R.id.bottom_sheet_overlay), faceContourPoints, (float) IMAGE_VIEW_WIDTH / cachedBitmap.getWidth(), R.drawable.male_1);
+            FacePainter.drawHaircut(activity, overlayView, faceContourPoints, (float) IMAGE_VIEW_WIDTH / cachedBitmap.getWidth(), hairStyleImgIds.get(index),hairCutPostScaleFactor.get(index));
         } catch (Exception e) {
             e.printStackTrace();
         }
-        bottomSheetDialog.setContentView(bottomSheetView);
-        bottomSheetDialog.show();
     }
 
 
