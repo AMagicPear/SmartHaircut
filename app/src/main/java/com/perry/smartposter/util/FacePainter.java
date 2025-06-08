@@ -12,11 +12,14 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
+import android.util.Log;
 import android.view.View;
 
 import com.perry.smartposter.R;
 
+import java.util.AbstractMap;
 import java.util.List;
+import java.util.Map;
 
 public final class FacePainter {
 
@@ -26,12 +29,15 @@ public final class FacePainter {
         // 基准点绘制
         if (!faceContourPoints.isEmpty()) {
             // 计算发型基准点
-            PointF hairBasePoint = calculateHairBasePoint(faceContourPoints);
+            var calculateHairBasePoint = calculateHairBasePoint(faceContourPoints);
+            PointF hairBasePoint = calculateHairBasePoint.getKey();
+            float faceHeight = calculateHairBasePoint.getValue();
+            Log.d("Perry", "drawHaircut: "+ hairBasePoint.x + hairBasePoint.y +"faceHeight" + faceHeight);
             // 加载发型图片
             Bitmap hairBitmap = BitmapFactory.decodeResource(activity.getResources(), hairStyleImgId);
             // 计算图片绘制位置（使图片中心对齐基准点）
             Matrix matrix = new Matrix();
-            float scale = 0.08f; // 缩放比例
+            float scale = 0.00006f * faceHeight; // 缩放比例
             matrix.postScale(scale, scale);
             matrix.postTranslate(
                     hairBasePoint.x * scaleFactor - hairBitmap.getWidth()*scale/2f,
@@ -48,7 +54,7 @@ public final class FacePainter {
     }
 
     // 在 FacePainter 类中添加以下方法
-    private static PointF calculateHairBasePoint(List<PointF> faceContourPoints) {
+    private static Map.Entry<PointF, Float> calculateHairBasePoint(List<PointF> faceContourPoints) {
         // 找到面部轮廓的最高点（Y值最小）和最低点（Y值最大）
         float minY = Float.MAX_VALUE;
         float maxY = Float.MIN_VALUE;
@@ -76,8 +82,7 @@ public final class FacePainter {
         float baseX = count > 0 ? sumX / count : faceContourPoints.get(0).x;
         float faceHeight = maxY - minY;
         float baseY = minY - faceHeight * 0.2f; // 在额头基础上再上移20%的脸部高度
-
-        return new PointF(baseX, baseY);
+        return new AbstractMap.SimpleEntry<>(new PointF(baseX,baseY), faceHeight);
     }
 
     public static Bitmap mergeBitmaps(Bitmap bottomBitmap, Bitmap topBitmap) {
