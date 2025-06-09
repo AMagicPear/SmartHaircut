@@ -70,9 +70,14 @@ public class ImageAnalyzer implements ImageAnalysis.Analyzer {
 
     public static ArrayList<Float> hairCutYOffset =  new java.util.ArrayList<>();
     static {
-        hairCutPostScaleFactor.add(30f);
-        hairCutPostScaleFactor.add(30f);
-        hairCutPostScaleFactor.add(30f);
+        hairCutYOffset.add(30f);
+        hairCutYOffset.add(30f);
+        hairCutYOffset.add(30f);
+        hairCutYOffset.add(30f);
+        hairCutYOffset.add(30f);
+        hairCutYOffset.add(30f);
+        hairCutYOffset.add(30f);
+        hairCutYOffset.add(30f);
     }
     public ImageAnalyzer(MainActivity activity) {
         this.activity = activity;
@@ -144,7 +149,7 @@ public class ImageAnalyzer implements ImageAnalysis.Analyzer {
 
     private Bitmap paintWithIndex(List<PointF> faceContourPoints,int index){
         try {
-            return facePainter.drawHaircut(activity, overlayView, faceContourPoints, (float) IMAGE_VIEW_WIDTH / cachedBitmap.getWidth(), hairStyleImgIds.get(index),hairCutPostScaleFactor.get(index));
+            return facePainter.drawHaircut(activity, overlayView, faceContourPoints, (float) IMAGE_VIEW_WIDTH / cachedBitmap.getWidth(), hairStyleImgIds.get(index),hairCutPostScaleFactor.get(index),hairCutYOffset.get(index));
         } catch (Exception e) {
             e.printStackTrace();
             return null;
