@@ -2,12 +2,8 @@ package com.perry.smartposter.model;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.ImageFormat;
-import android.graphics.Paint;
 import android.graphics.PointF;
-import android.graphics.drawable.BitmapDrawable;
 import android.media.Image;
 import android.os.Environment;
 import android.util.Log;
@@ -37,10 +33,12 @@ import java.util.List;
 
 public class ImageAnalyzer implements ImageAnalysis.Analyzer {
     private final MainActivity activity;
+    public FacePainter facePainter;
     private BottomSheetDialog bottomSheetDialog;
     private View bottomSheetView;
     /// 用于缓存过程中的bitmap
     private Bitmap cachedBitmap;
+    Bitmap overlayBitmap = null;
     private View overlayView;
     public static final int IMAGE_VIEW_WIDTH = 244;
     public static final int IMAGE_VIEW_HEIGHT = 326;
@@ -61,6 +59,7 @@ public class ImageAnalyzer implements ImageAnalysis.Analyzer {
     }
     public ImageAnalyzer(MainActivity activity) {
         this.activity = activity;
+        facePainter = new FacePainter();
     }
 
     /// 分析器的主要功能函数
@@ -108,11 +107,11 @@ public class ImageAnalyzer implements ImageAnalysis.Analyzer {
         Button rightButton = bottomSheetView.findViewById(R.id.right_button);
         leftButton.setOnClickListener(v -> {
             currentHairStyle = (currentHairStyle - 1 + hairStyleImgIds.size()) % hairStyleImgIds.size();
-            paintWithIndex(faceContourPoints, currentHairStyle);
+            overlayBitmap = paintWithIndex(faceContourPoints, currentHairStyle);
         });
         rightButton.setOnClickListener(v -> {
             currentHairStyle = (currentHairStyle + 1) % hairStyleImgIds.size();
-            paintWithIndex(faceContourPoints, currentHairStyle);
+            overlayBitmap = paintWithIndex(faceContourPoints, currentHairStyle);
         });
         ImageView imageView = bottomSheetView.findViewById(R.id.bottom_sheet_img);
         Log.d("Perry", "Bitmap is null? " + (cachedBitmap == null));
@@ -120,16 +119,18 @@ public class ImageAnalyzer implements ImageAnalysis.Analyzer {
         imageView.setImageBitmap(cachedBitmap);
         setupButtons(bottomSheetView);
         // 在叠加层上绘制发型
-        paintWithIndex(faceContourPoints, currentHairStyle);
+        overlayBitmap = paintWithIndex(faceContourPoints, currentHairStyle);
         bottomSheetDialog.setContentView(bottomSheetView);
         bottomSheetDialog.show();
+//        cachedBitmap = FacePainter.mergeBitmaps(cachedBitmap, overlayBitmap);
     }
 
-    private void paintWithIndex(List<PointF> faceContourPoints,int index){
+    private Bitmap paintWithIndex(List<PointF> faceContourPoints,int index){
         try {
-            FacePainter.drawHaircut(activity, overlayView, faceContourPoints, (float) IMAGE_VIEW_WIDTH / cachedBitmap.getWidth(), hairStyleImgIds.get(index),hairCutPostScaleFactor.get(index));
+            return facePainter.drawHaircut(activity, overlayView, faceContourPoints, (float) IMAGE_VIEW_WIDTH / cachedBitmap.getWidth(), hairStyleImgIds.get(index),hairCutPostScaleFactor.get(index));
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
     }
 
@@ -145,7 +146,7 @@ public class ImageAnalyzer implements ImageAnalysis.Analyzer {
                 return;
             }
             Log.d("Perry", "showBottomSheet: yesbutton");
-            var filePath = ImageStorage.saveBitmapImage(cachedBitmap, activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES));
+            var filePath = ImageStorage.saveBitmapImage(facePainter.getMergedBitmap(cachedBitmap), activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES));
             activity.manager.AddDataElement(new DataElement(System.currentTimeMillis(), filePath, text.toString(), 0));
             Toast.makeText(activity, "保存成功", Toast.LENGTH_SHORT).show();
             bottomSheetDialog.dismiss();

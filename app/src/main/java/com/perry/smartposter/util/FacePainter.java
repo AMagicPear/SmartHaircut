@@ -7,23 +7,20 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
-import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
 import android.view.View;
-
-import com.perry.smartposter.R;
 
 import java.util.AbstractMap;
 import java.util.List;
 import java.util.Map;
 
 public final class FacePainter {
+    public Bitmap cachedOverlayBitmap;
 
-    public static Bitmap drawHaircut(Activity activity, View overlayView, List<PointF> faceContourPoints, float scaleFactor, int hairStyleImgId, float postScaleFactor) {
+    public Bitmap drawHaircut(Activity activity, View overlayView, List<PointF> faceContourPoints, float scaleFactor, int hairStyleImgId, float postScaleFactor) {
         Bitmap overlayBitmap = Bitmap.createBitmap(IMAGE_VIEW_WIDTH, IMAGE_VIEW_HEIGHT, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(overlayBitmap);
         // 基准点绘制
@@ -32,7 +29,7 @@ public final class FacePainter {
             var calculateHairBasePoint = calculateHairBasePoint(faceContourPoints);
             PointF hairBasePoint = calculateHairBasePoint.getKey();
             float faceHeight = calculateHairBasePoint.getValue();
-            Log.d("Perry", "drawHaircut: "+ hairBasePoint.x + hairBasePoint.y +"faceHeight" + faceHeight);
+            Log.d("Perry", "drawHaircut: " + hairBasePoint.x + hairBasePoint.y + "faceHeight" + faceHeight);
             // 加载发型图片
             Bitmap hairBitmap = BitmapFactory.decodeResource(activity.getResources(), hairStyleImgId);
             // 计算图片绘制位置（使图片中心对齐基准点）
@@ -40,12 +37,12 @@ public final class FacePainter {
             float scale = 0.00006f * faceHeight * postScaleFactor; // 缩放比例
             matrix.postScale(scale, scale);
             matrix.postTranslate(
-                    hairBasePoint.x * scaleFactor - hairBitmap.getWidth()*scale/2f,
-                    hairBasePoint.y * scaleFactor - hairBitmap.getHeight()*scale/2f + 30f
+                    hairBasePoint.x * scaleFactor - hairBitmap.getWidth() * scale / 2f,
+                    hairBasePoint.y * scaleFactor - hairBitmap.getHeight() * scale / 2f + 30f
             );
-            canvas.drawBitmap(hairBitmap, matrix, null);
             // 绘制发型图片（中心对齐基准点）
             canvas.drawBitmap(hairBitmap, matrix, null);
+            cachedOverlayBitmap = overlayBitmap;
         }
 
         // 设置View背景
@@ -82,22 +79,24 @@ public final class FacePainter {
         float baseX = count > 0 ? sumX / count : faceContourPoints.get(0).x;
         float faceHeight = maxY - minY;
         float baseY = minY - faceHeight * 0.2f; // 在额头基础上再上移20%的脸部高度
-        return new AbstractMap.SimpleEntry<>(new PointF(baseX,baseY), faceHeight);
+        return new AbstractMap.SimpleEntry<>(new PointF(baseX, baseY), faceHeight);
     }
 
-    public static Bitmap mergeBitmaps(Bitmap bottomBitmap, Bitmap topBitmap) {
-        // 创建一个新的Bitmap，大小与原始图片相同
+    public Bitmap getMergedBitmap(Bitmap baseBitmap) {
+        if(baseBitmap == null || cachedOverlayBitmap == null) return null;
+        // 使用与 drawHaircut 相同的画布尺寸
         Bitmap mergedBitmap = Bitmap.createBitmap(
-                bottomBitmap.getWidth(),
-                bottomBitmap.getHeight(),
-                bottomBitmap.getConfig()
+                IMAGE_VIEW_WIDTH,
+                IMAGE_VIEW_HEIGHT,
+                Bitmap.Config.ARGB_8888
         );
-        // 创建一个Canvas来绘制合并后的图片
+
+        Matrix matrix = new Matrix();
+        float scale = (float) IMAGE_VIEW_WIDTH / baseBitmap.getWidth();
+        matrix.postScale(scale, scale);
         Canvas canvas = new Canvas(mergedBitmap);
-        // 先绘制底部的Bitmap
-        canvas.drawBitmap(bottomBitmap, 0, 0, null);
-        // 再绘制顶部的Bitmap
-        canvas.drawBitmap(topBitmap, 0, 0, null);
+        canvas.drawBitmap(baseBitmap, matrix, null);
+        canvas.drawBitmap(cachedOverlayBitmap, 0, 0, null);
         return mergedBitmap;
     }
 }
