@@ -57,6 +57,13 @@ public class ImageAnalyzer implements ImageAnalysis.Analyzer {
         hairCutPostScaleFactor.add(0.7f);
         hairCutPostScaleFactor.add(0.9f);
     }
+
+    public static ArrayList<Float> hairCutYOffset =  new java.util.ArrayList<>();
+    static {
+        hairCutPostScaleFactor.add(30f);
+        hairCutPostScaleFactor.add(30f);
+        hairCutPostScaleFactor.add(30f);
+    }
     public ImageAnalyzer(MainActivity activity) {
         this.activity = activity;
         facePainter = new FacePainter();
