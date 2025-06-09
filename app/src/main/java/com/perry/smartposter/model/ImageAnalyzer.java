@@ -49,13 +49,23 @@ public class ImageAnalyzer implements ImageAnalysis.Analyzer {
         hairStyleImgIds.add(R.drawable.male_1);
         hairStyleImgIds.add(R.drawable.male_2);
         hairStyleImgIds.add(R.drawable.male_3);
+        hairStyleImgIds.add(R.drawable.female_1);
+        hairStyleImgIds.add(R.drawable.female_2);
+        hairStyleImgIds.add(R.drawable.female_3);
+        hairStyleImgIds.add(R.drawable.female_4);
+        hairStyleImgIds.add(R.drawable.female_5);
     }
 
     public static ArrayList<Float> hairCutPostScaleFactor =  new java.util.ArrayList<>();
     static {
         hairCutPostScaleFactor.add(1f);
         hairCutPostScaleFactor.add(0.7f);
-        hairCutPostScaleFactor.add(0.9f);
+        hairCutPostScaleFactor.add(0.92f);
+        hairCutPostScaleFactor.add(1f);
+        hairCutPostScaleFactor.add(0.43f);
+        hairCutPostScaleFactor.add(1f);
+        hairCutPostScaleFactor.add(1f);
+        hairCutPostScaleFactor.add(0.5f);
     }
 
     public static ArrayList<Float> hairCutYOffset =  new java.util.ArrayList<>();
